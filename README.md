@@ -2,8 +2,7 @@
 
 가상 이동체와 다중 센서(GPS/IMU/Velocity/Distance) 환경을 시뮬레이션하고 센서 융합으로 상태를 추정(Kalman Filter)하며 센서 이상을 탐지(Statistical → ML → DL)하는 개인 R&D 프로젝트입니다.
 
-실제 무기 설계/유도/추진/탄두는 다루지 않습니다.
-일반적인 이동체와 센서 데이터를 대상으로 합니다.
+실제 무기 설계/유도/추진/탄두는 다루지 않습니다. 일반적인 이동체와 센서 데이터를 대상으로 합니다.
 
 ## 핵심 설계
 
@@ -46,6 +45,20 @@ sentinel/
 - [ ] Phase 7 — 문서화
 
 ## 결과
+
+### 궤적 다양성 (동일 seed·동일 초기 상태, 가속도 프로파일만 변경)
+
+![trajectory types](docs/images/trajectory_types.png)
+
+| type | 종료 속도 | 경로 길이 | 순 방위 변화 |
+|---|---|---|---|
+| straight | 1.12 | 22.04 | -1.8° |
+| curve | 1.10 | 21.88 | +80.6° |
+| accelerate | 3.11 | 41.94 | -1.2° |
+| decelerate | 0.00 | 6.16 | -9.8° |
+| turn | 1.17 | 22.98 | +288.8° (거의 한 바퀴) |
+
+`decelerate`는 속도가 0을 지나 역주행하지 않도록 감속량을 `min(lon_accel, speed/dt)`로 클램프합니다.
 
 ### 상태 추정 (steps=200, straight, seed=42)
 
