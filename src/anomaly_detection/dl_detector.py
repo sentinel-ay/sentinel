@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.models.lstm_autoencoder import LSTMAutoencoder, reconstruction_error, train_lstm_autoencoder
+from src.models.lstm_autoencoder import reconstruction_error, train_lstm_autoencoder
 
 
 def detect_with_lstm(data: np.ndarray, threshold: float = 0.01):

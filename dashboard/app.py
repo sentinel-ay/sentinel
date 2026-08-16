@@ -1,5 +1,4 @@
 import streamlit as st
-import numpy as np
 
 from src.estimation.baseline import simple_baseline
 from src.estimation.kalman_filter import ConstantVelocityKalmanFilter
