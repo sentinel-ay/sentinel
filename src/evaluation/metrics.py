@@ -1,13 +1,12 @@
 import numpy as np
+from sklearn.metrics import roc_auc_score
 
 
 def mae_rmse(pred, true):
     pred = np.asarray(pred, dtype=float)
     true = np.asarray(true, dtype=float)
     err = pred - true
-    mae = np.mean(np.abs(err))
-    rmse = np.sqrt(np.mean(err ** 2))
-    return mae, rmse
+    return np.mean(np.abs(err)), np.sqrt(np.mean(err ** 2))
 
 
 def precision_recall_f1(y_true, y_pred):
@@ -20,3 +19,11 @@ def precision_recall_f1(y_true, y_pred):
     recall = tp / (tp + fn) if tp + fn else 0.0
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
     return precision, recall, f1
+
+
+def roc_auc(y_true, scores):
+    """Threshold-free ranking quality; NaN when only one class is present."""
+    y_true = np.asarray(y_true, dtype=int)
+    if len(np.unique(y_true)) < 2:
+        return float("nan")
+    return roc_auc_score(y_true, np.nan_to_num(np.asarray(scores, dtype=float), nan=0.0))

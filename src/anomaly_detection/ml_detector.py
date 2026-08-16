@@ -4,12 +4,18 @@ import numpy as np
 from sklearn.ensemble import IsolationForest
 
 
-def fit_isolation_forest(features: np.ndarray, contamination: float = 0.05):
-    model = IsolationForest(contamination=contamination, random_state=42)
-    model.fit(features)
+def fit_isolation_forest(features: np.ndarray, contamination: float, random_state: int):
+    model = IsolationForest(contamination=contamination, random_state=random_state)
+    model.fit(np.nan_to_num(np.asarray(features, dtype=float), nan=0.0))
     return model
 
 
 def predict_anomalies(model, features: np.ndarray):
-    pred = model.predict(features)
-    return pred == -1
+    features = np.nan_to_num(np.asarray(features, dtype=float), nan=0.0)
+    return model.predict(features) == -1
+
+
+def anomaly_scores(model, features: np.ndarray):
+    """Higher score = more anomalous (sklearn's score_samples is inverted)."""
+    features = np.nan_to_num(np.asarray(features, dtype=float), nan=0.0)
+    return -model.score_samples(features)

@@ -5,7 +5,10 @@ simulator:
   vx: 1.0
   vy: 0.5
   accel_std: 0.05
-  turn_rate: 0.0
+  traj_type: straight    # straight | curve | accelerate | decelerate | turn
+  lon_accel: 0.1         # accelerate / decelerate 종방향 가속도
+  lat_accel: 0.08        # curve 횡방향 가속도 (완만한 호)
+  turn_rate: 0.25        # turn 각속도 [rad/s] (급선회)
 
 sensors:
   gps:
@@ -34,15 +37,30 @@ sensors:
     outlier_prob: 0.008
 
 estimation:
-  q: 0.1
+  accel_process_std: 0.05   # 등속 모델의 가속도 프로세스 잡음 std (시뮬레이터 accel_std와 일치)
   r_gps: 0.5
   r_imu: 0.3
   r_velocity: 0.2
   r_distance: 0.4
 
 anomaly:
+  steps: 600             # 이상탐지용 시퀀스 길이 (LSTM window 확보)
+  fault_start: 400       # 이 시점부터 이상 주입, 이전 구간은 정상(학습/캘리브레이션용)
+  fault_end: 500
   zscore_threshold: 3.0
   contamination: 0.05
+  seq_len: 50
+  threshold_percentile: 99
+  magnitude:
+    bias: 3.0
+    drift: 5.0
+    outlier: 6.0
+    dropout: 0.0         # 미사용 (결측은 크기 개념이 없음)
+  lstm:
+    hidden_dim: 16
+    num_layers: 1
+    epochs: 30
+    lr: 0.001
 
 project:
   random_seed: 42
